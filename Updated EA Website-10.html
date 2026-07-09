@@ -1,0 +1,1712 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Padmakar FX | Premium Automated Trading Engines & MT5 Solutions</title>
+    <style>
+        :root {
+            --bg-main: #040712;
+            --bg-card: #0A0F24;
+            --bg-input: #121A36;
+            --accent-amber: #FF9F0A;
+            --accent-cyan: #00F0FF;
+            --accent-blue: #007AFF;
+            --accent-glow: rgba(0, 240, 255, 0.15);
+            --text-main: #F5F7FA;
+            --text-muted: #6B7C96;
+            --border-color: #172242;
+            --mt5-green: #00E676;
+            --mt5-red: #FF3D00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* FLOATING BACKGROUND WATERMARK MATRIX */
+        .global-watermark-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.02;
+            font-family: 'Courier New', monospace;
+            font-weight: 900;
+            font-size: 4.5rem;
+            line-height: 1.2;
+            user-select: none;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 50px;
+            padding: 20px;
+        }
+
+        .watermark-item {
+            transform: rotate(-15deg);
+            white-space: nowrap;
+        }
+
+        a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* LIVE CURRENCY TICKER */
+        .ticker-wrap {
+            width: 100%;
+            background-color: #02040A;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            z-index: 1001;
+            height: 35px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 45s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .ticker-item:hover {
+            color: var(--accent-cyan);
+        }
+
+        .up { color: var(--mt5-green); }
+        .down { color: var(--mt5-red); }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Navigation Header */
+        header {
+            background-color: rgba(4, 7, 18, 0.9);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            width: 100%;
+            top: 35px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+        }
+
+        /* FLOATING ANIMATED LOGO & BRANDING */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            animation: scifiFloat 4s ease-in-out infinite;
+        }
+
+        .brand-logo-3d-scifi {
+            width: 44px;
+            height: 44px;
+            background: #0A0F24;
+            color: var(--accent-cyan);
+            font-weight: 900;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6), 
+                        inset 0 0 10px rgba(0, 240, 255, 0.4);
+            text-shadow: 0 0 8px var(--accent-cyan);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .brand-logo-3d-scifi::before {
+            content: '';
+            position: absolute;
+            background: var(--accent-amber);
+            box-shadow: 0 0 8px var(--accent-amber);
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            right: 6px;
+            border-radius: 50%;
+        }
+
+        @keyframes scifiFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand:hover .brand-logo-3d-scifi {
+            transform: scale(1.1);
+            border-color: var(--accent-amber);
+            color: var(--accent-amber);
+            box-shadow: 0 0 25px rgba(255, 159, 10, 0.8), 
+                        inset 0 0 15px rgba(255, 159, 10, 0.5);
+            text-shadow: 0 0 8px var(--accent-amber);
+        }
+
+        .brand-text h1 {
+            font-size: 1.3rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            background: linear-gradient(rgba(255,255,255,1), rgba(0, 240, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.65rem;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* DYNAMIC GRAPH TERMINAL OVERLAY WORKSTATION */
+        .chart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(2, 4, 10, 0.96);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            width: 95%;
+            max-width: 1500px;
+            height: 85%;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 40px rgba(0, 240, 255, 0.1);
+            transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .modal-content.maximized {
+            width: 99% !important;
+            height: 96% !important;
+            max-width: none !important;
+        }
+
+        .modal-content.minimized {
+            width: 340px !important;
+            height: 48px !important;
+            position: fixed !important;
+            bottom: 20px !important;
+            right: 20px !important;
+            top: auto !important;
+            left: auto !important;
+            transform: none !important;
+        }
+
+        .modal-header {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #060a1a;
+        }
+
+        .window-controls {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .control-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+        }
+
+        .control-btn:hover {
+            color: white;
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        .control-btn.close-x:hover {
+            background-color: #FF3B30;
+        }
+
+        /* DUAL VIEW MT5 PANEL + CHART UI WITH COLLAPSIBLE HUD */
+        .workspace-split-body {
+            display: flex;
+            flex-grow: 1;
+            width: 100%;
+            height: calc(100% - 53px);
+            background-color: #040712;
+            position: relative;
+        }
+
+        .mt5-hud-panel {
+            width: 320px;
+            background-color: #070b19;
+            border-right: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            padding: 15px;
+            gap: 12px;
+            overflow-y: auto;
+            font-family: monospace;
+            transition: margin-left 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+            position: relative;
+        }
+
+        .mt5-hud-panel.collapsed {
+            margin-left: -320px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* HUD SIDEBAR HIDE / UNHIDE TRIGGER TOGGLE BUTTON */
+        .hud-toggle-trigger-btn {
+            position: absolute;
+            left: 320px;
+            top: 50%;
+            transform: translateY(-50%);
+            z-index: 10;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-left: none;
+            color: var(--accent-cyan);
+            width: 24px;
+            height: 50px;
+            cursor: pointer;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            box-shadow: 4px 0 10px rgba(0,0,0,0.3);
+        }
+
+        .mt5-hud-panel.collapsed + .hud-toggle-trigger-btn {
+            left: 0px;
+        }
+
+        .chart-container {
+            flex-grow: 1;
+            height: 100%;
+            background-color: #131722;
+            position: relative;
+        }
+
+        /* FLOATING ON-CHART MT5 HUD PRICE AND COUNTDOWN TAG */
+        .chart-floating-mt5-hud-tag {
+            position: absolute;
+            top: 20px;
+            right: 70px;
+            z-index: 5;
+            background-color: rgba(6, 10, 26, 0.85);
+            border: 1px solid var(--accent-cyan);
+            padding: 8px 14px;
+            border-radius: 6px;
+            font-family: monospace;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .floating-tag-price {
+            font-weight: bold;
+            font-size: 1.1rem;
+            color: white;
+            transition: color 0.15s ease;
+        }
+
+        .floating-tag-timer {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.85rem;
+            font-weight: bold;
+        }
+
+        /* MT5 HUD UI Components */
+        .mt5-block {
+            background: #0a0f24;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 10px;
+        }
+
+        .mt5-title-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 5px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .mt5-timeframe-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 5px;
+            margin-bottom: 5px;
+        }
+
+        .tf-btn {
+            background: #121a36;
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 4px;
+            font-size: 0.75rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        .tf-btn.active {
+            background: var(--accent-blue);
+            border-color: var(--accent-cyan);
+            color: white;
+        }
+
+        .mt5-bidask-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 5px;
+        }
+
+        .price-box {
+            background: #111832;
+            padding: 8px;
+            border-radius: 4px;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: background 0.1s ease, border-color 0.1s ease;
+        }
+
+        .price-box.flash-up {
+            background: rgba(0, 230, 118, 0.2) !important;
+            border-color: var(--mt5-green);
+        }
+
+        .price-box.flash-down {
+            background: rgba(255, 61, 0, 0.2) !important;
+            border-color: var(--mt5-red);
+        }
+
+        .price-num {
+            font-size: 1.15rem;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .mt5-data-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            padding: 4px 0;
+            border-bottom: 1px solid #111832;
+        }
+
+        .mt5-data-row:last-child {
+            border-bottom: none;
+        }
+
+        .progress-bar-container {
+            width: 100%;
+            background: #121a36;
+            height: 12px;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-top: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .progress-bar-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent-blue), var(--accent-cyan));
+            width: 60%;
+            transition: width 1s linear;
+        }
+
+        /* Layout Structure */
+        section {
+            padding: 100px 2rem 60px 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            font-size: 1.05rem;
+        }
+
+        /* Hero Frame */
+        #hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 40px;
+            padding-top: 180px;
+            padding-bottom: 60px;
+            background: radial-gradient(circle at left, var(--accent-glow) 0%, transparent 60%);
+        }
+
+        .hero-text {
+            text-align: left;
+        }
+
+        .badge-launch {
+            display: inline-block;
+            background-color: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--accent-cyan);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        #hero h2 {
+            font-size: 3.5rem;
+            line-height: 1.15;
+            margin-bottom: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        #hero p {
+            color: var(--text-muted);
+            font-size: 1.20rem;
+            margin-bottom: 35px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+            cursor: pointer;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 122, 255, 0.5);
+        }
+
+        /* Hero Visual Media Layout */
+        .hero-media-showcase {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .mock-terminal-display {
+            background-color: #060a17;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header-dots {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+        .terminal-header-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Hero Blueprint Spec Content */
+        .hero-blueprint-spec-box {
+            background-color: rgba(18, 26, 54, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .hero-blueprint-spec-box h4 {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero-blueprint-spec-box p {
+            font-size: 0.85rem !important;
+            color: #b0bfd6 !important;
+            line-height: 1.5 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Grid Framework */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 35px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h3::before {
+            content: "■";
+            color: var(--accent-cyan);
+            font-size: 1rem;
+        }
+
+        /* Software Information Component */
+        .software-spec-section {
+            padding: 20px 2rem 60px 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .software-grid-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .info-node-card {
+            background: linear-gradient(145deg, #090e22, #050918);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .info-node-card h4 {
+            color: var(--accent-cyan);
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-node-card p {
+            color: #b0bfd6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Plans Matrix Section */
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .price-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 45px 35px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .price-card.recommended {
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 40px rgba(0,122,255,0.15);
+        }
+
+        .reco-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-blue);
+            color: white;
+            font-size: 0.75rem;
+            padding: 5px 16px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .price-tier {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .price-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .price-period {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .price-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 40px;
+            color: var(--text-muted);
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+        }
+
+        .btn-pricing {
+            display: block;
+            background-color: transparent;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+
+        .price-card.recommended .btn-pricing {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        /* Matrix Spreadsheet Table */
+        .table-responsive {
+            overflow-x: auto;
+            margin-top: 35px;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: var(--bg-card);
+        }
+
+        th, td {
+            padding: 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #060a1a;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* Portal Management Box & Corporate Trust Grid */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            align-items: start;
+        }
+
+        .portal-form-wrapper {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 45px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .dashboard-main-panel {
+            background: #060a19;
+            border: 1px solid var(--accent-cyan);
+            border-radius: 10px;
+            padding: 30px;
+            margin-top: 20px;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .download-btn-node {
+            background: linear-gradient(135deg, var(--accent-blue), #00c6ff);
+            color: white;
+            padding: 14px 24px;
+            border-radius: 6px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0, 122, 255, 0.4);
+            border: none;
+            cursor: pointer;
+            width: 100%;
+            justify-content: center;
+            text-transform: uppercase;
+            font-size: 0.95rem;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 14px 18px;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+        }
+
+        .callout-box {
+            background-color: rgba(0, 240, 255, 0.02);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 25px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+
+        /* Integrated Portal Guidelines */
+        .portal-integrated-guidelines {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .portal-integrated-guidelines h4 {
+            color: var(--accent-amber);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+
+        .portal-integrated-guidelines ol {
+            padding-left: 18px;
+            font-size: 0.8rem;
+            color: #b0bfd6;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* Footer Infrastructure */
+        footer {
+            background-color: #02040a;
+            border-top: 1px solid var(--border-color);
+            padding: 80px 2rem 40px 2rem;
+            margin-top: 100px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .footer-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-bottom-flex {
+            max-width: 1300px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .footer-bottom {
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .footer-corporate-profile-node {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .footer-location-node-text h4 {
+            color: var(--accent-cyan);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .footer-location-node-text p {
+            font-size: 0.8rem;
+            color: #b0bfd6;
+            line-height: 1.5;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (max-width: 992px) {
+            #hero { grid-template-columns: 1fr; text-align: center; padding-top: 140px; }
+            .hero-text { text-align: center; }
+            .footer-bottom-flex { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            #hero h2 { font-size: 2.6rem; }
+            .workspace-split-body { flex-direction: column; }
+            .mt5-hud-panel { width: 100%; height: auto; border-right: none; border-bottom: 1px solid var(--border-color); }
+            .mt5-hud-panel.collapsed { margin-left: 0; margin-top: -300px; }
+            .hud-toggle-trigger-btn { display: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GLOBAL PERSISTENT BACKGROUND WATERMARK -->
+    <div class="global-watermark-bg">
+        <div class="watermark-item">PADMAKAR FX</div><div class="watermark-item">Hyper_Scalper_Core_v4.2</div>
+        <div class="watermark-item">Hyper_Scalper_Core_v4.2</div><div class="watermark-item">PADMAKAR FX</div>
+        <div class="watermark-item">PADMAKAR FX</div><div class="watermark-item">Hyper_Scalper_Core_v4.2</div>
+        <div class="watermark-item">Hyper_Scalper_Core_v4.2</div><div class="watermark-item">PADMAKAR FX</div>
+        <div class="watermark-item">PADMAKAR FX</div><div class="watermark-item">Hyper_Scalper_Core_v4.2</div>
+        <div class="watermark-item">Hyper_Scalper_Core_v4.2</div><div class="watermark-item">PADMAKAR FX</div>
+    </div>
+
+    <!-- STREAM TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item" onclick="openChart('FX_IDC:XAUUSD', 'XAUUSD (Gold)')">XAUUSD <span class="up">▲ $2,425.50 (+0.51%)</span></div>
+            <div class="ticker-item" onclick="openChart('FX:EURUSD', 'EURUSD')">EURUSD <span class="down">▼ 1.1470 (-0.12%)</span></div>
+            <div class="ticker-item" onclick="openChart('FX:GBPUSD', 'GBPUSD')">GBPUSD <span class="up">▲ 1.3520 (+0.08%)</span></div>
+            <div class="ticker-item" onclick="openChart('BINANCE:BTCUSDT', 'BTCUSD')">BTCUSD <span class="up">▲ $108,450 (+1.4%)</span></div>
+            <div class="ticker-item" onclick="openChart('CAPITALCOM:DXY', 'US Dollar Index')">US_DXY <span class="down">▼ 98.75 (-0.05%)</span></div>
+            <!-- Duplicates -->
+            <div class="ticker-item" onclick="openChart('FX_IDC:XAUUSD', 'XAUUSD (Gold)')">XAUUSD <span class="up">▲ $2,425.50 (+0.51%)</span></div>
+            <div class="ticker-item" onclick="openChart('FX:EURUSD', 'EURUSD')">EURUSD <span class="down">▼ 1.1470 (-0.12%)</span></div>
+            <div class="ticker-item" onclick="openChart('FX:GBPUSD', 'GBPUSD')">GBPUSD <span class="up">▲ 1.3520 (+0.08%)</span></div>
+            <div class="ticker-item" onclick="openChart('BINANCE:BTCUSDT', 'BTCUSD')">BTCUSD <span class="up">▲ $108,450 (+1.4%)</span></div>
+            <div class="ticker-item" onclick="openChart('CAPITALCOM:DXY', 'US Dollar Index')">US_DXY <span class="down">▼ 98.75 (-0.05%)</span></div>
+        </div>
+    </div>
+
+    <!-- ADVANCED QUANT WORKSTATION TERMINAL WITH COLLAPSIBLE MT5 HUD -->
+    <div id="chartModal" class="chart-modal">
+        <div class="modal-content" id="modalContentFrame">
+            <div class="modal-header">
+                <h3 id="modalChartTitle" style="color: white; font-size: 1rem; font-weight: 600; letter-spacing: 0.5px;">Live Workstation Terminal Feed</h3>
+                <div class="window-controls">
+                    <button class="control-btn" title="Minimize Window" onclick="toggleMinimize()">─</button>
+                    <button class="control-btn" title="Maximize Fullscreen View" onclick="toggleMaximize()">⛶</button>
+                    <button class="control-btn close-x" title="Close Terminal" onclick="closeChart()">&times;</button>
+                </div>
+            </div>
+            
+            <div class="workspace-split-body">
+                <!-- MT5 LIVE TERMINAL HUD PANEL -->
+                <div class="mt5-hud-panel" id="mt5HudPanel">
+                    <div class="mt5-block">
+                        <div class="mt5-title-label"><span>Timeframe Matrix</span> <span id="hudActiveSymbol" style="color:var(--accent-cyan)">EURUSD</span></div>
+                        <div class="mt5-timeframe-grid">
+                            <button class="tf-btn active" onclick="changeTimeframe(1, 'M1', this)">M1</button>
+                            <button class="tf-btn" onclick="changeTimeframe(5, 'M5', this)">M5</button>
+                            <button class="tf-btn" onclick="changeTimeframe(15, 'M15', this)">M15</button>
+                            <button class="tf-btn" onclick="changeTimeframe(30, 'M30', this)">M30</button>
+                            <button class="tf-btn" onclick="changeTimeframe(60, 'H1', this)">H1</button>
+                            <button class="tf-btn" onclick="changeTimeframe(240, 'H4', this)">H4</button>
+                            <button class="tf-btn" onclick="changeTimeframe(1440, 'D1', this)">D1</button>
+                        </div>
+                    </div>
+
+                    <div class="mt5-block">
+                        <div class="mt5-title-label"><span>Market Order Book</span> <span style="color:var(--mt5-green)">● LIVE</span></div>
+                        <div class="mt5-bidask-row">
+                            <div class="price-box" id="bidBox">
+                                <div style="font-size:0.7rem; color:var(--text-muted)">BID</div>
+                                <div class="price-num" id="hudBidPrice">1.14700</div>
+                            </div>
+                            <div class="price-box" id="askBox">
+                                <div style="font-size:0.7rem; color:var(--text-muted)">ASK</div>
+                                <div class="price-num" id="hudAskPrice">1.14720</div>
+                            </div>
+                        </div>
+                        <div style="margin-top: 10px;">
+                            <div class="mt5-data-row"><span>Spread Allocation</span><span id="hudSpread" style="color:var(--accent-amber)">2.0 pips</span></div>
+                            <div class="mt5-data-row"><span>Active Tick Counter</span><span id="hudTickCount" style="color:white; font-weight:bold;">2,489</span></div>
+                            <div class="mt5-data-row"><span>Live Session Volume</span><span id="hudVolume" style="color:white;">41,850</span></div>
+                        </div>
+                    </div>
+
+                    <div class="mt5-block">
+                        <div class="mt5-title-label"><span>Candle Analytics (OHLC)</span></div>
+                        <div class="mt5-data-row"><span>Open Target</span><span id="ohlcOpen">1.14685</span></div>
+                        <div class="mt5-data-row"><span>High Threshold</span><span id="ohlcHigh">1.14742</span></div>
+                        <div class="mt5-data-row"><span>Low Threshold</span><span id="ohlcLow">1.14650</span></div>
+                        <div class="mt5-data-row"><span>Close Threshold</span><span id="ohlcClose">1.14700</span></div>
+                    </div>
+
+                    <div class="mt5-block">
+                        <div class="mt5-title-label"><span>Candle Execution Loop</span></div>
+                        <div class="mt5-data-row"><span>Countdown Timer</span><span id="hudCountdown" style="color:var(--accent-cyan); font-weight:bold;">59s</span></div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="hudProgressBar"></div>
+                        </div>
+                    </div>
+
+                    <div class="mt5-block">
+                        <div class="mt5-title-label"><span>Platform Metrics</span></div>
+                        <div class="mt5-data-row"><span>Market Framework</span><span>Open</span></div>
+                        <div class="mt5-data-row"><span>Broker Time-frame</span><span>UTC</span></div>
+                        <div class="mt5-data-row"><span>Server Connection</span><span>Synchronized</span></div>
+                    </div>
+                </div>
+
+                <!-- SIDEBAR HUD HIDE / UNHIDE TOGGLE TRIGGER BUTTON -->
+                <button class="hud-toggle-trigger-btn" id="hudToggleBtn" title="Hide/Unhide MT5 Panel" onclick="toggleHudPanel()">◀</button>
+
+                <!-- LIVE INTERACTIVE TRADINGVIEW ENGINE WITH ON-CHART BADGE -->
+                <div class="chart-container" id="chartWidgetContainer"></div>
+                
+                <!-- DYNAMIC ON-CHART COUNTDOWN BADGE -->
+                <div class="chart-floating-mt5-hud-tag" id="chartFloatingTag">
+                    <span id="floatingTagSymbol" style="color: var(--accent-cyan); font-weight: bold; font-size: 0.85rem;">EURUSD</span>
+                    <span class="floating-tag-price" id="floatingTagPrice">1.14700</span>
+                    <span class="floating-tag-timer" id="floatingTagTimer">59s</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Header Navigation Section -->
+    <header>
+        <div class="nav-container">
+            <div class="brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+                <div class="brand-logo-3d-scifi">P</div>
+                <div class="brand-text">
+                    <h1>PADMAKAR FX</h1>
+                    <p>Trading Automation Systems</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#pricing">Plans & Pricing</a></li>
+                    <li><a href="#deployment">Easy Setup Steps</a></li>
+                    <li><a href="#portal">Client Center & Downloads</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Hero Screen -->
+    <section id="hero">
+        <div class="hero-text">
+            <div class="badge-launch">Limited Access Slots Open</div>
+            <h2>Reliable Code.<br>Fast Automatic Execution.</h2>
+            <p>We build professional-grade MetaTrader 5 (MT5) trading bots designed with smart risk limits and fully automatic operations to save you time.</p>
+            
+            <!-- HOME PAGE: EA CORE BLUEPRINT SPECIFICATION BOX -->
+            <div class="hero-blueprint-spec-box">
+                <h4>EA Core Blueprint Specification</h4>
+                <p>
+                    The <strong>Retail Hyper Scalper Elite EA</strong> represents a breakthrough in high-frequency algorithmic execution engineered natively for MetaTrader 5. Operating via optimized instruction sets, this enterprise-grade engine targets micro-liquidity inefficiencies within liquid asset classes like Gold (XAUUSD) and global majors. Bound to a strict risk model, each trade is coupled with server-side stop-losses and dynamic slippage tracking to preserve portfolio stability during high-impact macroeconomic vectors.
+                </p>
+            </div>
+            
+            <div style="display:flex; flex-wrap: wrap; gap:15px; margin-top:25px;">
+                <a href="#pricing" class="btn-primary">View Plans & Get Access</a>
+            </div>
+        </div>
+
+        <div class="hero-media-showcase">
+            <div class="mock-terminal-display">
+                <div class="terminal-header-dots">
+                    <span style="background-color:#FF5F56;"></span>
+                    <span style="background-color:#FFBD2E;"></span>
+                    <span style="background-color:#27C93F;"></span>
+                    <span style="color:var(--text-muted); font-size:0.75rem; margin-left:auto; font-family:monospace;">Hyper_Scalper_Core_v4.2</span>
+                </div>
+                
+                <svg viewBox="0 0 400 180" style="width:100%; height:auto; background:#040712; border-radius:4px; border:1px solid #141d3d; padding:10px;">
+                    <line x1="0" y1="40" x2="400" y2="40" stroke="#0e1630" stroke-width="1" />
+                    <line x1="0" y1="90" x2="400" y2="90" stroke="#0e1630" stroke-width="1" stroke-dasharray="4" />
+                    <line x1="0" y1="140" x2="400" y2="140" stroke="#0e1630" stroke-width="1" />
+                    
+                    <path d="M 10 130 L 60 110 L 110 145 L 160 85 L 210 105 L 260 50 L 310 65 L 360 25" fill="none" stroke="#172654" stroke-width="2" />
+                    <path d="M 10 120 L 60 100 L 110 130 L 160 60 L 210 80 L 260 30 L 310 45 L 360 15" fill="none" stroke="url(#cyanGlow)" stroke-width="3" stroke-linecap="round"/>
+                    
+                    <circle cx="160" cy="60" r="5" fill="#007AFF" />
+                    <text x="170" y="55" fill="#007AFF" font-size="9" font-family="monospace" font-weight="bold">ENTRY ORDER [BUY]</text>
+                    
+                    <circle cx="260" cy="30" r="5" fill="var(--mt5-green)" />
+                    <text x="270" y="25" fill="var(--mt5-green)" font-size="9" font-family="monospace" font-weight="bold">TAKE PROFIT [+14.2 pips]</text>
+                    
+                    <defs>
+                        <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#007AFF" />
+                            <stop offset="100%" stop-color="#00F0FF" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <div style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-family:monospace; font-size:0.8rem;">
+                    <div style="background:#0a1026; padding:8px; border-radius:4px; border-left:3px solid var(--accent-cyan)">
+                        <span style="color:var(--text-muted)">Execution Speed:</span><br>
+                        <span style="color:var(--mt5-green); font-weight:bold;">2.4ms Ultra-Low Latency</span>
+                    </div>
+                    <div style="background:#0a1026; padding:8px; border-radius:4px; border-left:3px solid var(--accent-amber)">
+                        <span style="color:var(--text-muted)">Accuracy Vector:</span><br>
+                        <span style="color:white; font-weight:bold;">Mathematical Precision</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SOFTWARE INFORMATION CONTAINER -->
+    <section class="software-spec-section">
+        <h2 class="section-title">Software Specifications Core</h2>
+        <p class="section-subtitle">Under the hood of our next-gen MetaTrader architecture optimization frameworks.</p>
+        <div class="software-grid-info">
+            <div class="info-node-card">
+                <h4>Engine Setup</h4>
+                <p>Natively constructed into standalone system files for immediate low-overhead initialization inside local operational memories.</p>
+            </div>
+            <div class="info-node-card">
+                <h4>Slippage Shield</h4>
+                <p>Monitors volatility variations in microseconds, skipping toxic entries if the spread expands past historical norms.</p>
+            </div>
+            <div class="info-node-card">
+                <h4>Telemetry Relay</h4>
+                <p>Integrated using asynchronous verification loops to safely handle account verification licenses without slowing down orders.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Core Flagship Software Engine Deck -->
+    <section id="flagship">
+        <h2 class="section-title">Retail Hyper Scalper Elite v4.2</h2>
+        <p class="section-subtitle">Our Most Popular Fully Automated Trading Bot</p>
+        
+        <div class="features-grid">
+            <div class="card">
+                <h3>Top Market Assets</h3>
+                <p>Specially built and optimized for high-volume trading on major symbols like XAUUSD (Gold) and popular currency pairs.</p>
+            </div>
+            <div class="card">
+                <h3>Smart Risk Management</h3>
+                <p>Includes built-in protection rules that automatically adjust your trade size to safely match your current account balance without critical failures.</p>
+            </div>
+            <div class="card">
+                <h3>Live Alerts On Your Phone</h3>
+                <p>Sends instant updates and trade reports directly to your private phone using a quick Telegram setup framework instantly.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simple Software Plans Frame Section -->
+    <section id="pricing">
+        <h2 class="section-title">Simple Software Plans</h2>
+        <p class="section-subtitle">Choose the package that fits your trading scale. Payments are completely safe and secure.</p>
+        
+        <div class="pricing-container">
+            <!-- Starter Suite -->
+            <div class="price-card">
+                <div class="price-tier">Starter Suite</div>
+                <div class="price-amount">₹9,999</div>
+                <div class="price-period">per month</div>
+                <ul class="price-features">
+                    <li><strong>1 Active</strong> MT5 Account Link</li>
+                    <li>Fully Automated Local Trading</li>
+                    <li>Ready-to-Use Trading Settings</li>
+                    <li>Works with All Standard Brokers</li>
+                </ul>
+                <a href="#deployment" class="btn-pricing" style="width: 100%; display: block; text-align: center;">Get Started Now</a>
+            </div>
+
+            <!-- Professional Stack -->
+            <div class="price-card recommended">
+                <div class="reco-badge">Most Popular</div>
+                <div class="price-tier">Professional Stack</div>
+                <div class="price-amount">₹29,999</div>
+                <div class="price-period">per month</div>
+                <ul class="price-features">
+                    <li><strong>3 Concurrent</strong> MT5 Account Links</li>
+                    <li>Hyper Scalper Elite Premium Engine</li>
+                    <li>Smart Spread & Slippage Protection</li>
+                    <li>Live Phone Telemetry Alerts Feed</li>
+                </ul>
+                <a href="#deployment" class="btn-pricing">Deploy Professional Setup</a>
+            </div>
+
+            <!-- Enterprise Tier -->
+            <div class="price-card">
+                <div class="price-tier">Enterprise / Fund Managers</div>
+                <div class="price-amount">₹99,999+</div>
+                <div class="price-period">per month</div>
+                <ul class="price-features">
+                    <li><strong>Unlimited</strong> MT5 Account Links</li>
+                    <li>Custom Built Features & Adjustments</li>
+                    <li>Private Cloud Server Setup Support</li>
+                    <li>24/7 Priority VIP Phone Support</li>
+                </ul>
+                <a href="#deployment" class="btn-pricing" style="width: 100%; display: block; text-align: center;">Talk to an Engineer</a>
+            </div>
+        </div>
+
+        <h3 style="margin-top: 60px; margin-bottom: 20px; font-weight: 700;">Technical Performance Comparison</h3>
+        <div class="table-responsive">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Performance Feature</th>
+                        <th>Starter Suite</th>
+                        <th>Professional Stack</th>
+                        <th>Enterprise Tier</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>System Layout</strong></td>
+                        <td>Standard Automatic Loop</td>
+                        <td>Fast Multi-Task Processing</td>
+                        <td>Top-Tier Cloud Network Nodes</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Order Execution Speed</strong></td>
+                        <td>Fast Response Frame</td>
+                        <td>Super Fast Processing Loop</td>
+                        <td>Ultra-Instant Execution Performance</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Price Protection</strong></td>
+                        <td>Basic Price Limit Checks</td>
+                        <td>Live Dynamic Spread Tracking</td>
+                        <td>Full Market Liquidity Safety Net</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Emergency Backup</strong></td>
+                        <td>Standard Auto-Stop Rule</td>
+                        <td>Instant Smart Safety Shut-off</td>
+                        <td>Multi-Server Fail-Safe System</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <!-- Procedural Milestone Deployment System Guide -->
+    <section id="deployment">
+        <h2 class="section-title">3 Easy Steps to Get and Start Your Trading Bot</h2>
+        <p class="section-subtitle">How to easily move from your secure payment right into active trading.</p>
+        
+        <div class="steps-container">
+            <div class="step-node" style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 35px; border-radius: 10px; position: relative;">
+                <div style="font-size: 3.5rem; font-weight: 900; color: rgba(0, 240, 255, 0.05); position: absolute; top: 10px; right: 25px;">01</div>
+                <h3 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.25rem;">Choose a Plan & Pay</h3>
+                <p>Pick the best software tier from the price list above. Complete your payment quickly through our heavily encrypted secure checkout system.</p>
+            </div>
+
+            <div class="step-node" style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 35px; border-radius: 10px; position: relative;">
+                <div style="font-size: 3.5rem; font-weight: 900; color: rgba(0, 240, 255, 0.05); position: absolute; top: 10px; right: 25px;">02</div>
+                <h3 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.25rem;">Download Your Bot</h3>
+                <p>As soon as payment succeeds, you will instantly get your License ID and Secret Password. Log into the Client Hub to download your complete trading bot file.</p>
+            </div>
+
+            <div class="step-node" style="background-color: var(--bg-card); border: 1px solid var(--border-color); padding: 35px; border-radius: 10px; position: relative;">
+                <div style="font-size: 3.5rem; font-weight: 900; color: rgba(0, 240, 255, 0.05); position: absolute; top: 10px; right: 25px;">03</div>
+                <h3 style="color: var(--accent-cyan); margin-bottom: 15px; font-size: 1.25rem;">Paste and Start Trading</h3>
+                <p>Move your downloaded bot file into the 'Experts' folder of your MT5 terminal. Add your given License Key ID in the settings box, and let the bot trade for you safely.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Secure Customer Gateway Dashboard Center & Live Software Access Nodes -->
+    <section id="portal">
+        <h2 class="section-title">Client Management Center & Product Access Hub</h2>
+        <p class="section-subtitle">Log in securely below to view your account, manage active keys, and instantly pull down product files.</p>
+        
+        <div class="portal-grid">
+            <div class="portal-form-wrapper" id="authGatekeeperContainer">
+                <h3 style="margin-bottom: 15px; font-weight: 700;">Secure Account Login</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:25px;">Enter your client registry credentials to unpack software allocations.</p>
+                
+                <form id="clientLoginForm" onsubmit="handleClientAuth(event)">
+                    <div class="form-group">
+                        <label for="username">Username / License ID</label>
+                        <input type="text" id="username" value="client_demo" placeholder="client_demo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Secret Key / Password</label>
+                        <input type="password" id="password" value="demo1234" placeholder="••••••••" required>
+                    </div>
+                    <button type="submit" class="btn-submit">Access Dashboard & Download Files</button>
+                </form>
+
+                <div id="authenticatedDownloadPanel" class="dashboard-main-panel" style="display:none;">
+                    <h4 style="color:#00E676; font-size:1rem; margin-bottom:10px; display:flex; align-items:center; gap:8px;">
+                        ✓ Secure Session Authorized
+                    </h4>
+                    <p style="font-size:0.85rem; color:var(--text-main); margin-bottom:20px;">
+                        Your software license verification sequence is successful. Your assigned trading files are prepared.
+                    </p>
+                    
+                    <div style="border:1px dashed var(--border-color); padding:15px; border-radius:6px; background:var(--bg-main); margin-bottom:20px;">
+                        <span style="font-size:0.75rem; color:var(--text-muted); display:block; text-transform:uppercase;">Active Allocation:</span>
+                        <span style="font-weight:700; color:white; font-size:0.95rem;">Retail_Hyper_Scalper_Elite_v4.2</span>
+                        <span style="font-size:0.75rem; color:var(--accent-cyan); display:block; margin-top:4px;">Validation Match: Validated</span>
+                    </div>
+
+                    <button class="download-btn-node" onclick="triggerBinaryDownload()">
+                        📥 Download Trading Bot File
+                    </button>
+                    
+                    <!-- CLIENT PORTAL AREA: EA ACCESS & ACTIVATION GUIDELINES -->
+                    <div class="portal-integrated-guidelines">
+                        <h4>EA Access &amp; Activation Guidelines</h4>
+                        <ol>
+                            <li><strong>Generate License Key:</strong> Inside this secure dashboard manager, bind your custom MT5 live account credentials to sync permissions instantly.</li>
+                            <li>Download the compiled bot framework binary and paste it into your station's local <code>MQL5/Experts</code> systems container folder.</li>
+                            <li>Check the box to <strong>"Allow Automated Trading"</strong> and allow connections to our validation URL node inside platform protocols.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <div class="callout-box">
+                    <h4 style="font-weight:700; margin-bottom:8px;">Important Setup Notice</h4>
+                    <p>Make sure to check the box for "Allow WebRequest" inside your MT5 settings panel. This allows the Hyper Scalping EA Bot file to instantly check with our servers to ensure your license is active and authorized.</p>
+                </div>
+                <h3>Frequently Asked Questions</h3>
+                <ul style="list-style: none; margin-top: 20px;">
+                    <li style="margin-bottom: 20px;">
+                        <strong>Q: Does the Hyper Scalping EA Bot work entirely on its own?</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">A: Yes. Once it is turned on inside your MT5 platform, the Hyper Scalping EA Bot handles everything from reading charts to opening and closing trades completely automatically.</span>
+                    </li>
+                    <li style="margin-bottom: 20px;">
+                        <strong>Q: Do I need to keep my computer turned on 24/7?</strong><br>
+                        <span style="color: var(--text-muted); font-size: 0.9rem;">A: To ensure the Hyper Scalping EA Bot never goes offline, using a cheap trading cloud server (VPS) is highly recommended so it can track markets smoothly without gaps.</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Block -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Trading Software</h4>
+                <ul>
+                    <li><a href="#flagship">Hyper Scalping EA Bot Edition</a></li>
+                    <li><a href="#hero">Automated Systems</a></li>
+                    <li><a href="#pricing">Price Safety Matrix</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Client Support</h4>
+                <ul>
+                    <li><a href="#portal">Secure Gateway Login</a></li>
+                    <li><a href="#portal">Hyper Scalping EA Bot Download Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company Rules</h4>
+                <ul>
+                    <li><a href="#flagship">Market Risk Warnings</a></li>
+                    <li><a href="#flagship">Software Agreements</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <!-- FOOTER BOTTOM AREA: RELOCATED CORPORATE LOCATION PROFILE NODE (NO BOX) -->
+        <div class="footer-bottom-flex">
+            <div class="footer-bottom">
+                <p>Building high-performance automated software solutions for modern financial platforms.</p>
+                <p style="margin-top: 15px; opacity: 0.4;">&copy; 2026 PadmakarFX Automation Systems. All Rights Reserved.</p>
+            </div>
+            
+            <div class="footer-corporate-profile-node">
+                <div class="footer-location-node-text">
+                    <h4>📍 Verified Corporate Profile &amp; Location Node</h4>
+                    <p>
+                        <strong>Padmakar FX Headquarters</strong><br>
+                        Software Development Hub &amp; Algorithmic Operations Desk<br>
+                        Pune, Maharashtra, India. Secure Native Server Architecture Zone.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- INTERACTIVE ENGINE SCRIPTS -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script type="text/javascript">
+        let currentSymbol = 'FX:EURUSD';
+        let currentTitle = 'EURUSD';
+        let currentTimeframeMinutes = 1;
+        let countdownSeconds = 60;
+        let totalTimeframeSeconds = 60;
+        let globalTimerInterval = null;
+        let tickSimulationInterval = null;
+
+        // Base Data Dictionary for Live Processing Simulation Node
+        const assetDatabase = {
+            'FX:EURUSD': { bid: 1.14702, spread: 0.00020, mult: 100000, pips: 1, digits: 5, vol: 41850 },
+            'FX:GBPUSD': { bid: 1.35205, spread: 0.00025, mult: 100000, pips: 1, digits: 5, vol: 62410 },
+            'FX_IDC:XAUUSD': { bid: 2425.50, spread: 0.35, mult: 100, pips: 0.1, digits: 2, vol: 184500 },
+            'BINANCE:BTCUSDT': { bid: 108450.00, spread: 5.00, mult: 1, pips: 1, digits: 2, vol: 924100 },
+            'CAPITALCOM:DXY': { bid: 98.750, spread: 0.015, mult: 1000, pips: 1, digits: 3, vol: 12500 }
+        };
+
+        function handleClientAuth(event) {
+            event.preventDefault();
+            document.getElementById('clientLoginForm').style.display = 'none';
+            document.getElementById('authenticatedDownloadPanel').style.display = 'block';
+        }
+
+        function triggerBinaryDownload() {
+            alert("Preparing your package... Your download file is transferring now through secure tunnels.");
+        }
+
+        function openChart(symbolPair, cleanName) {
+            currentSymbol = symbolPair;
+            currentTitle = cleanName;
+
+            document.getElementById('chartModal').style.display = 'flex';
+            document.getElementById('modalChartTitle').innerText = cleanName + ' - MT5 Live Workstation Stream';
+            
+            let displaySym = cleanName.split(' ')[0];
+            document.getElementById('hudActiveSymbol').innerText = displaySym;
+            document.getElementById('floatingTagSymbol').innerText = displaySym;
+            
+            renderTradingViewWidget(symbolPair);
+            initMT5Simulation();
+        }
+
+        // HIDE / UNHIDE MT5 DASHBOARD CONTROL PANEL FUNCTION
+        function toggleHudPanel() {
+            const panel = document.getElementById('mt5HudPanel');
+            const toggleBtn = document.getElementById('hudToggleBtn');
+            
+            panel.classList.toggle('collapsed');
+            
+            if (panel.classList.contains('collapsed')) {
+                toggleBtn.innerText = "▶";
+            } else {
+                toggleBtn.innerText = "◀";
+            }
+        }
+
+        function renderTradingViewWidget(symbol) {
+            document.getElementById('chartWidgetContainer').innerHTML = '';
+            new TradingView.widget({
+                "autosize": true,
+                "symbol": symbol,
+                "interval": currentTimeframeMinutes.toString(),
+                "timezone": "Asia/Kolkata",
+                "theme": "dark",
+                "style": "1", 
+                "locale": "en",
+                "toolbar_bg": "#0A0F24",
+                "enable_publishing": false,
+                "hide_side_toolbar": false, 
+                "allow_symbol_change": true, 
+                "container_id": "chartWidgetContainer",
+                "disabled_features": ["header_compare"],
+                "enabled_features": ["countdown", "scales_context_menu", "side_toolbar_in_fullscreen"]
+            });
+        }
+
+        function changeTimeframe(minutes, label, element) {
+            currentTimeframeMinutes = minutes;
+            totalTimeframeSeconds = minutes * 60;
+            countdownSeconds = totalTimeframeSeconds;
+            
+            document.querySelectorAll('.tf-btn').forEach(btn => btn.classList.remove('active'));
+            element.classList.add('active');
+            
+            renderTradingViewWidget(currentSymbol);
+        }
+
+        function initMT5Simulation() {
+            clearInterval(globalTimerInterval);
+            clearInterval(tickSimulationInterval);
+            
+            countdownSeconds = totalTimeframeSeconds;
+            let tickCounter = Math.floor(Math.random() * 5000) + 1000;
+            
+            const asset = assetDatabase[currentSymbol] || assetDatabase['FX:EURUSD'];
+            let liveBid = asset.bid;
+            let currentVolume = asset.vol;
+
+            updateOHLCDisplay(liveBid);
+
+            // 1. Real Candle Countdown Loop
+            globalTimerInterval = setInterval(() => {
+                countdownSeconds--;
+                if (countdownSeconds < 0) {
+                    countdownSeconds = totalTimeframeSeconds; 
+                    updateOHLCDisplay(liveBid);
+                }
+                
+                // Sidebar and On-chart Badges Synchronization
+                document.getElementById('hudCountdown').innerText = countdownSeconds + "s";
+                document.getElementById('floatingTagTimer').innerText = countdownSeconds + "s";
+                
+                let percent = (countdownSeconds / totalTimeframeSeconds) * 100;
+                document.getElementById('hudProgressBar').style.width = percent + "%";
+            }, 1000);
+
+            // 2. Real Live Tick Counter, Price Flash Vector & On-Chart Moving Price Update
+            tickSimulationInterval = setInterval(() => {
+                const changeAmount = (Math.random() - 0.5) * (asset.pips * 4 / asset.mult);
+                const oldBid = liveBid;
+                liveBid = parseFloat((liveBid + changeAmount).toFixed(asset.digits));
+                let liveAsk = parseFloat((liveBid + asset.spread).toFixed(asset.digits));
+                
+                let formattedPrice = liveBid.toFixed(asset.digits);
+                document.getElementById('hudBidPrice').innerText = formattedPrice;
+                document.getElementById('hudAskPrice').innerText = liveAsk.toFixed(asset.digits);
+                
+                // Feed prices directly into the on-chart floating overlay tag
+                const floatingPriceTag = document.getElementById('floatingTagPrice');
+                floatingPriceTag.innerText = formattedPrice;
+                
+                document.getElementById('hudSpread').innerText = (asset.spread * asset.mult / asset.pips).toFixed(1) + " pips";
+                
+                tickCounter++;
+                currentVolume += Math.floor(Math.random() * 3) + 1;
+                document.getElementById('hudTickCount').innerText = tickCounter.toLocaleString();
+                document.getElementById('hudVolume').innerText = currentVolume.toLocaleString();
+
+                const bidBox = document.getElementById('bidBox');
+                const askBox = document.getElementById('askBox');
+                
+                if (liveBid > oldBid) {
+                    bidBox.className = "price-box flash-up";
+                    askBox.className = "price-box flash-up";
+                    floatingPriceTag.style.color = "var(--mt5-green)";
+                } else if (liveBid < oldBid) {
+                    bidBox.className = "price-box flash-down";
+                    askBox.className = "price-box flash-down";
+                    floatingPriceTag.style.color = "var(--mt5-red)";
+                }
+
+                setTimeout(() => {
+                    bidBox.className = "price-box";
+                    askBox.className = "price-box";
+                    floatingPriceTag.style.color = "white";
+                }, 120);
+
+            }, Math.floor(Math.random() * 800) + 300);
+        }
+
+        function updateOHLCDisplay(basePrice) {
+            document.getElementById('ohlcOpen').innerText = (basePrice - (Math.random() * 0.0005)).toFixed(4);
+            document.getElementById('ohlcHigh').innerText = (basePrice + (Math.random() * 0.0012)).toFixed(4);
+            document.getElementById('ohlcLow').innerText = (basePrice - (Math.random() * 0.0015)).toFixed(4);
+            document.getElementById('ohlcClose').innerText = basePrice.toFixed(4);
+        }
+
+        function closeChart() {
+            clearInterval(globalTimerInterval);
+            clearInterval(tickSimulationInterval);
+            const contentFrame = document.getElementById('modalContentFrame');
+            contentFrame.classList.remove('maximized', 'minimized');
+            document.getElementById('chartModal').style.display = 'none';
+            document.getElementById('chartWidgetContainer').innerHTML = '';
+        }
+
+        function toggleMaximize() {
+            const contentFrame = document.getElementById('modalContentFrame');
+            contentFrame.classList.remove('minimized');
+            contentFrame.classList.toggle('maximized');
+            renderTradingViewWidget(currentSymbol);
+        }
+
+        function toggleMinimize() {
+            const contentFrame = document.getElementById('modalContentFrame');
+            contentFrame.classList.remove('maximized');
+            contentFrame.classList.toggle('minimized');
+            
+            if(contentFrame.classList.contains('minimized')) {
+                document.getElementById('chartWidgetContainer').style.display = 'none';
+                document.getElementById('chartFloatingTag').style.display = 'none';
+            } else {
+                document.getElementById('chartWidgetContainer').style.display = 'block';
+                document.getElementById('chartFloatingTag').style.display = 'flex';
+                renderTradingViewWidget(currentSymbol);
+            }
+        }
+
+        window.onclick = function(event) {
+            var modal = document.getElementById('chartModal');
+            if (event.target == modal) closeChart();
+        }
+    </script>
+</body>
+</html>
