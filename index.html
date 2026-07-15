@@ -1,0 +1,1300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PadmakarFX | Free AI Trading Analytics & Broker Affiliate Hub</title>
+    <style>
+        :root {
+            --bg-main: #040712;
+            --bg-card: #0A0F24;
+            --bg-input: #121A36;
+            --accent-amber: #FF9F0A;
+            --accent-cyan: #00F0FF;
+            --accent-blue: #007AFF;
+            --accent-glow: rgba(0, 240, 255, 0.15);
+            --text-main: #F5F7FA;
+            --text-muted: #6B7C96;
+            --border-color: #172242;
+            --mt5-green: #00E676;
+            --mt5-red: #FF3D00;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* FLOATING BACKGROUND WATERMARK MATRIX */
+        .global-watermark-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1;
+            opacity: 0.02;
+            font-family: 'Courier New', monospace;
+            font-weight: 900;
+            font-size: 4.5rem;
+            line-height: 1.2;
+            user-select: none;
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 50px;
+            padding: 20px;
+        }
+
+        .watermark-item {
+            transform: rotate(-15deg);
+            white-space: nowrap;
+        }
+
+        a {
+            color: var(--accent-blue);
+            text-decoration: none;
+            transition: all 0.2s ease;
+        }
+
+        a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* LIVE CURRENCY TICKER */
+        .ticker-wrap {
+            width: 100%;
+            background-color: #02040A;
+            border-bottom: 1px solid var(--border-color);
+            overflow: hidden;
+            position: fixed;
+            top: 0;
+            z-index: 1001;
+            height: 35px;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticker {
+            display: flex;
+            white-space: nowrap;
+            padding-left: 100%;
+            animation: marquee 45s linear infinite;
+        }
+
+        .ticker-item {
+            display: inline-block;
+            padding: 0 2rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: color 0.2s ease;
+        }
+        
+        .ticker-item:hover {
+            color: var(--accent-cyan);
+        }
+
+        .up { color: var(--mt5-green); }
+        .down { color: var(--mt5-red); }
+
+        @keyframes marquee {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* Navigation Header */
+        header {
+            background-color: rgba(4, 7, 18, 0.9);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            width: 100%;
+            top: 35px;
+            z-index: 1000;
+            backdrop-filter: blur(12px);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.75rem 2rem;
+        }
+
+        /* FLOATING ANIMATED LOGO & BRANDING */
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+            animation: scifiFloat 4s ease-in-out infinite;
+        }
+
+        .brand-logo-3d-scifi {
+            width: 44px;
+            height: 44px;
+            background: #0A0F24;
+            color: var(--accent-cyan);
+            font-weight: 900;
+            font-size: 1.6rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            position: relative;
+            border: 2px solid var(--accent-cyan);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.6), 
+                        inset 0 0 10px rgba(0, 240, 255, 0.4);
+            text-shadow: 0 0 8px var(--accent-cyan);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .brand-logo-3d-scifi::before {
+            content: '';
+            position: absolute;
+            background: var(--accent-amber);
+            box-shadow: 0 0 8px var(--accent-amber);
+            width: 6px;
+            height: 6px;
+            top: 2px;
+            right: 6px;
+            border-radius: 50%;
+        }
+
+        @keyframes scifiFloat {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-5px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .brand:hover .brand-logo-3d-scifi {
+            transform: scale(1.1);
+            border-color: var(--accent-amber);
+            color: var(--accent-amber);
+            box-shadow: 0 0 25px rgba(255, 159, 10, 0.8), 
+                        inset 0 0 15px rgba(255, 159, 10, 0.5);
+            text-shadow: 0 0 8px var(--accent-amber);
+        }
+
+        .brand-text h1 {
+            font-size: 1.3rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            background: linear-gradient(rgba(255,255,255,1), rgba(0, 240, 255, 0.8));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .brand-text p {
+            font-size: 0.65rem;
+            color: var(--accent-blue);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+
+        nav a {
+            color: var(--text-main);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        nav a:hover {
+            color: var(--accent-cyan);
+        }
+
+        /* Layout Structure */
+        section {
+            padding: 100px 2rem 60px 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        .section-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .section-subtitle {
+            color: var(--text-muted);
+            margin-bottom: 50px;
+            font-size: 1.05rem;
+        }
+
+        /* Hero Frame */
+        #hero {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 40px;
+            padding-top: 180px;
+            padding-bottom: 60px;
+            background: radial-gradient(circle at left, var(--accent-glow) 0%, transparent 60%);
+        }
+
+        .hero-text {
+            text-align: left;
+        }
+
+        .badge-launch {
+            display: inline-block;
+            background-color: rgba(0, 240, 255, 0.08);
+            border: 1px solid rgba(0, 240, 255, 0.3);
+            color: var(--accent-cyan);
+            padding: 6px 16px;
+            border-radius: 30px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        #hero h2 {
+            font-size: 3.5rem;
+            line-height: 1.15;
+            margin-bottom: 25px;
+            font-weight: 900;
+            letter-spacing: -1px;
+        }
+
+        #hero p {
+            color: var(--text-muted);
+            font-size: 1.20rem;
+            margin-bottom: 35px;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 16px 36px;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 1rem;
+            display: inline-block;
+            box-shadow: 0 4px 20px rgba(0, 122, 255, 0.4);
+            cursor: pointer;
+            border: none;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(0, 122, 255, 0.5);
+        }
+
+        /* Hero Visual Media Layout */
+        .hero-media-showcase {
+            position: relative;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        .mock-terminal-display {
+            background-color: #060a17;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+        }
+
+        .terminal-header-dots {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 15px;
+        }
+
+        .terminal-header-dots span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+        }
+
+        /* Hero Blueprint Spec Content */
+        .hero-blueprint-spec-box {
+            background-color: rgba(18, 26, 54, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 25px;
+        }
+
+        .hero-blueprint-spec-box h4 {
+            color: var(--accent-cyan);
+            font-size: 0.95rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .hero-blueprint-spec-box p {
+            font-size: 0.85rem !important;
+            color: #b0bfd6 !important;
+            line-height: 1.5 !important;
+            margin-bottom: 0 !important;
+        }
+
+        /* Grid Framework */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 35px;
+            border-radius: 10px;
+            transition: all 0.25s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(0, 240, 255, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .card h3 {
+            margin-bottom: 15px;
+            font-size: 1.35rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .card h3::before {
+            content: "■";
+            color: var(--accent-cyan);
+            font-size: 1rem;
+        }
+
+        /* Software Information Component */
+        .software-spec-section {
+            padding: 20px 2rem 60px 2rem;
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+
+        .software-grid-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+        }
+
+        .info-node-card {
+            background: linear-gradient(145deg, #090e22, #050918);
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            padding: 25px;
+        }
+
+        .info-node-card h4 {
+            color: var(--accent-cyan);
+            font-size: 1.05rem;
+            margin-bottom: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .info-node-card p {
+            color: #b0bfd6;
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        /* Plans Matrix Section */
+        .pricing-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 30px;
+            margin-bottom: 60px;
+        }
+
+        .price-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 45px 35px;
+            text-align: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .price-card.recommended {
+            border-color: var(--accent-blue);
+            box-shadow: 0 15px 40px rgba(0,122,255,0.15);
+        }
+
+        .reco-badge {
+            position: absolute;
+            top: -14px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--accent-blue);
+            color: white;
+            font-size: 0.75rem;
+            padding: 5px 16px;
+            border-radius: 30px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+        }
+
+        .price-tier {
+            font-size: 1.6rem;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .price-amount {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 5px;
+        }
+
+        .price-period {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 30px;
+        }
+
+        .price-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 40px;
+            color: var(--text-muted);
+        }
+
+        .price-features li {
+            padding: 12px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+            font-size: 0.95rem;
+        }
+
+        .btn-pricing {
+            display: block;
+            background-color: transparent;
+            color: white;
+            border: 1px solid var(--border-color);
+            padding: 14px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            text-align: center;
+            width: 100%;
+            cursor: pointer;
+        }
+
+        .price-card.recommended .btn-pricing {
+            background-color: var(--accent-blue);
+            border-color: var(--accent-blue);
+        }
+
+        /* Portal Management Box */
+        .portal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
+            align-items: start;
+        }
+
+        .portal-form-wrapper {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 45px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input, .form-group select {
+            width: 100%;
+            background-color: var(--bg-input);
+            border: 1px solid var(--border-color);
+            padding: 14px 18px;
+            border-radius: 6px;
+            color: white;
+            font-size: 1rem;
+            transition: border-color 0.2s ease;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-cyan);
+        }
+
+        .btn-submit {
+            width: 100%;
+            background-color: var(--accent-blue);
+            color: white;
+            padding: 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            box-shadow: 0 4px 12px rgba(0, 122, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 122, 255, 0.3);
+        }
+
+        .callout-box {
+            background-color: rgba(0, 240, 255, 0.02);
+            border-left: 4px solid var(--accent-cyan);
+            padding: 25px;
+            border-radius: 0 8px 8px 0;
+            margin-bottom: 30px;
+        }
+
+        .success-message {
+            background-color: rgba(0, 230, 118, 0.1);
+            border-left: 4px solid var(--mt5-green);
+            padding: 15px 20px;
+            border-radius: 0 6px 6px 0;
+            color: var(--mt5-green);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .error-message {
+            background-color: rgba(255, 61, 0, 0.1);
+            border-left: 4px solid var(--mt5-red);
+            padding: 15px 20px;
+            border-radius: 0 6px 6px 0;
+            color: var(--mt5-red);
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        /* Footer Infrastructure */
+        footer {
+            background-color: #02040a;
+            border-top: 1px solid var(--border-color);
+            padding: 80px 2rem 40px 2rem;
+            margin-top: 100px;
+            position: relative;
+            z-index: 5;
+        }
+
+        .footer-grid {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-col h4 {
+            margin-bottom: 15px;
+            color: var(--accent-cyan);
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            margin-bottom: 10px;
+        }
+
+        .footer-bottom-flex {
+            max-width: 1300px;
+            margin: 0 auto;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 40px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            align-items: start;
+        }
+
+        .footer-bottom {
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        @media (max-width: 992px) {
+            #hero { grid-template-columns: 1fr; text-align: center; padding-top: 140px; }
+            .hero-text { text-align: center; }
+            .footer-bottom-flex { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 768px) {
+            nav ul { display: none; }
+            #hero h2 { font-size: 2.6rem; }
+            section { padding: 80px 1.5rem 50px 1.5rem; }
+        }
+
+        .step-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .step-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 35px;
+            border-radius: 10px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .step-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+        }
+
+        .step-number {
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: rgba(0, 240, 255, 0.05);
+            position: absolute;
+            top: 10px;
+            right: 25px;
+        }
+
+        .step-card h3 {
+            color: var(--accent-cyan);
+            margin-bottom: 15px;
+            font-size: 1.25rem;
+            position: relative;
+            z-index: 2;
+        }
+
+        .step-card p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+
+        .broker-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .broker-card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .broker-card:hover {
+            border-color: var(--accent-cyan);
+            box-shadow: 0 8px 20px rgba(0, 240, 255, 0.1);
+        }
+
+        .broker-card h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 8px;
+            font-size: 1.1rem;
+        }
+
+        .broker-card p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-bottom: 12px;
+        }
+
+        .broker-card .btn-primary {
+            width: 100%;
+            text-align: center;
+            display: inline-block;
+            padding: 10px 20px;
+            font-size: 0.9rem;
+        }
+
+        .faq-item {
+            margin-bottom: 30px;
+            background-color: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item:hover {
+            border-color: var(--accent-cyan);
+        }
+
+        .faq-item h4 {
+            color: var(--accent-cyan);
+            margin-bottom: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .faq-item.active .answer {
+            display: block;
+        }
+
+        .faq-item .answer {
+            display: none;
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .badge-free {
+            display: inline-block;
+            background-color: rgba(0, 230, 118, 0.1);
+            border: 1px solid var(--mt5-green);
+            color: var(--mt5-green);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .badge-premium {
+            display: inline-block;
+            background-color: rgba(0, 122, 255, 0.1);
+            border: 1px solid var(--accent-blue);
+            color: var(--accent-blue);
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .tagline-emphasis {
+            color: var(--accent-cyan);
+            font-weight: 700;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- GLOBAL PERSISTENT BACKGROUND WATERMARK -->
+    <div class="global-watermark-bg">
+        <div class="watermark-item">PADMAKAR FX</div>
+        <div class="watermark-item">AI Trading Analytics</div>
+        <div class="watermark-item">Free To Premium</div>
+        <div class="watermark-item">PADMAKAR FX</div>
+        <div class="watermark-item">Zero Setup Cost</div>
+        <div class="watermark-item">Affiliate Revenue</div>
+    </div>
+
+    <!-- STREAM TICKER -->
+    <div class="ticker-wrap">
+        <div class="ticker">
+            <div class="ticker-item">XAUUSD <span id="tickerXAUUSD" class="up">Loading...</span></div>
+            <div class="ticker-item">EURUSD <span id="tickerEURUSD" class="down">Loading...</span></div>
+            <div class="ticker-item">GBPUSD <span id="tickerGBPUSD" class="up">Loading...</span></div>
+            <div class="ticker-item">BTCUSD <span id="tickerBTCUSD" class="up">Loading...</span></div>
+            <div class="ticker-item">NAS100 <span id="tickerNAS100" class="down">Loading...</span></div>
+            <div class="ticker-item">XAUUSD <span id="tickerXAUUSD2" class="up">Loading...</span></div>
+            <div class="ticker-item">EURUSD <span id="tickerEURUSD2" class="down">Loading...</span></div>
+            <div class="ticker-item">GBPUSD <span id="tickerGBPUSD2" class="up">Loading...</span></div>
+            <div class="ticker-item">BTCUSD <span id="tickerBTCUSD2" class="up">Loading...</span></div>
+            <div class="ticker-item">NAS100 <span id="tickerNAS1002" class="down">Loading...</span></div>
+        </div>
+    </div>
+
+    <!-- Header Navigation Section -->
+    <header>
+        <div class="nav-container">
+            <div class="brand" onclick="window.scrollTo({top: 0, behavior: 'smooth'});">
+                <div class="brand-logo-3d-scifi">P</div>
+                <div class="brand-text">
+                    <h1>PADMAKAR FX</h1>
+                    <p>Free AI Trading Hub</p>
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#hero">Home</a></li>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#monetization">Monetization</a></li>
+                    <li><a href="#signup">Get Started Free</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Hero Section -->
+    <section id="hero">
+        <div class="hero-text">
+            <div class="badge-launch">🚀 100% Free to Start</div>
+            <h2>AI-Powered Trading Analytics.<br><span class="tagline-emphasis">$0 to Profitable.</span></h2>
+            <p>Track trades, analyze performance, and connect with top regulated brokers—completely free. Earn lifetime commissions while you trade. No licenses needed. No capital required.</p>
+            
+            <div class="hero-blueprint-spec-box">
+                <h4>The PadmakarFX Advantage</h4>
+                <p>
+                    We provide the <strong>premium trading dashboard and AI analytics</strong> you'd normally pay $29/month for, free forever. You focus on trading and education. We connect you with established brokers (IC Markets, Pepperstone, AvaTrade) and earn affiliate commissions on your trades. You trade better. We profit together. <strong>Zero financial risk to you.</strong>
+                </p>
+            </div>
+            
+            <div style="display:flex; flex-wrap: wrap; gap:15px; margin-top:25px;">
+                <a href="#signup" class="btn-primary">→ Sign Up Free (2 Min)</a>
+                <a href="#monetization" class="btn-primary" style="background-color: transparent; border: 2px solid var(--accent-cyan); color: var(--accent-cyan);">Learn How You Earn</a>
+            </div>
+        </div>
+
+        <div class="hero-media-showcase">
+            <div class="mock-terminal-display">
+                <div class="terminal-header-dots">
+                    <span style="background-color:#FF5F56;"></span>
+                    <span style="background-color:#FFBD2E;"></span>
+                    <span style="background-color:#27C93F;"></span>
+                    <span style="color:var(--text-muted); font-size:0.75rem; margin-left:auto; font-family:monospace;">AI Analytics Engine v1.0</span>
+                </div>
+                
+                <svg viewBox="0 0 400 180" style="width:100%; height:auto; background:#040712; border-radius:4px; border:1px solid #141d3d; padding:10px;">
+                    <line x1="0" y1="40" x2="400" y2="40" stroke="#0e1630" stroke-width="1" />
+                    <line x1="0" y1="90" x2="400" y2="90" stroke="#0e1630" stroke-width="1" stroke-dasharray="4" />
+                    <line x1="0" y1="140" x2="400" y2="140" stroke="#0e1630" stroke-width="1" />
+                    
+                    <path d="M 10 130 L 60 110 L 110 145 L 160 85 L 210 105 L 260 50 L 310 65 L 360 25" fill="none" stroke="#172654" stroke-width="2" />
+                    <path d="M 10 120 L 60 100 L 110 130 L 160 60 L 210 80 L 260 30 L 310 45 L 360 15" fill="none" stroke="url(#cyanGlow)" stroke-width="3" stroke-linecap="round"/>
+                    
+                    <circle cx="160" cy="60" r="5" fill="#007AFF" />
+                    <text x="170" y="55" fill="#007AFF" font-size="9" font-family="monospace" font-weight="bold">WIN RATE: 67%</text>
+                    
+                    <circle cx="260" cy="30" r="5" fill="#00E676" />
+                    <text x="270" y="25" fill="#00E676" font-size="9" font-family="monospace" font-weight="bold">PROFIT: $1,240</text>
+                    
+                    <defs>
+                        <linearGradient id="cyanGlow" x1="0%" y1="0%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#007AFF" />
+                            <stop offset="100%" stop-color="#00F0FF" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+
+                <div style="margin-top:15px; display:grid; grid-template-columns: 1fr 1fr; gap:10px; font-family:monospace; font-size:0.8rem;">
+                    <div style="background:#0a1026; padding:8px; border-radius:4px; border-left:3px solid var(--accent-cyan)">
+                        <span style="color:var(--text-muted)">Account Status:</span><br>
+                        <span style="color:var(--mt5-green); font-weight:bold;">Active & Trading</span>
+                    </div>
+                    <div style="background:#0a1026; padding:8px; border-radius:4px; border-left:3px solid var(--accent-amber)">
+                        <span style="color:var(--text-muted)">AI Signals:</span><br>
+                        <span style="color:white; font-weight:bold;">Real-Time Updates</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section id="features">
+        <h2 class="section-title">Your Free Trading Operating System</h2>
+        <p class="section-subtitle">Everything a professional trader needs. Everything's free and always will be.</p>
+        
+        <div class="features-grid">
+            <div class="card">
+                <h3>📊 AI Trade Analyst</h3>
+                <p>Paste your trade history. Our AI breaks down your edge, bias, and profit opportunities in seconds. No spreadsheet pain. No guesswork.</p>
+            </div>
+            <div class="card">
+                <h3>📈 Performance Dashboard</h3>
+                <p>Win rate, drawdown, Sharpe ratio, monthly P&L graphs. Watch your improvement month-over-month. Gamified progress tracking included.</p>
+            </div>
+            <div class="card">
+                <h3>🤖 Live Signal Generator</h3>
+                <p>AI-generated trading signals based on market data from your connected broker. Alerts via email and Telegram (coming soon).</p>
+            </div>
+            <div class="card">
+                <h3>🎓 Trading Academy (Coming Soon)</h3>
+                <p>Micro-lessons on risk management, psychology, and profitable trading patterns. Learn from professionals in your community.</p>
+            </div>
+            <div class="card">
+                <h3>💬 Trader Community</h3>
+                <p>Connect with other traders. Share setups. Learn together. No gatekeeping. No BS. Pure trading knowledge exchange.</p>
+            </div>
+            <div class="card">
+                <h3>🔗 Broker Integration Hub</h3>
+                <p>Connect your live or demo account from IC Markets, Pepperstone, AvaTrade, and 50+ other regulated brokers. Real-time sync.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Monetization Path Section -->
+    <section id="monetization">
+        <h2 class="section-title">How to Turn This Into Profit</h2>
+        <p class="section-subtitle">Three zero-cost paths to recurring income. Choose one or run all three.</p>
+        
+        <div class="features-grid" style="margin-top: 50px;">
+            <div class="card">
+                <h3>🔗 Path 1: Affiliate Revenue</h3>
+                <p><strong>How it works:</strong> Trade through our recommended brokers using your referral link. You earn $5-$10 per lot traded—for life.</p>
+                <p style="margin-top: 15px; color: var(--mt5-green); font-weight: 700;">Revenue: Passive lifetime commissions. $3K-$10K/month potential.</p>
+            </div>
+            <div class="card">
+                <h3>💎 Path 2: Premium Subscription</h3>
+                <p><strong>How it works:</strong> Basic dashboard is free. Advanced AI signals, custom alerts, and strategy backtesting: $29/month.</p>
+                <p style="margin-top: 15px; color: var(--mt5-green); font-weight: 700;">Revenue: Recurring SaaS MRR. $5K-$50K/month potential.</p>
+            </div>
+            <div class="card">
+                <h3>🏢 Path 3: White-Label B2B</h3>
+                <p><strong>How it works:</strong> Prop firms and brokers license this dashboard as their own front-end. $5K-$20K upfront + maintenance.</p>
+                <p style="margin-top: 15px; color: var(--mt5-green); font-weight: 700;">Revenue: Enterprise deals. $10K-$100K+ per contract.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Broker Partners Section -->
+    <section>
+        <h2 class="section-title">Trade With Regulated Brokers</h2>
+        <p class="section-subtitle">Connect your account and start earning affiliate commissions.</p>
+        
+        <div class="broker-showcase">
+            <div class="broker-card">
+                <h4>IC Markets</h4>
+                <p>Global FX & Crypto<br><strong>Commission: $10/lot</strong></p>
+                <a href="#signup" class="btn-primary" style="font-size: 0.9rem; padding: 10px 15px;">Get Link</a>
+            </div>
+            <div class="broker-card">
+                <h4>Pepperstone</h4>
+                <p>FX & Indices<br><strong>Commission: $8/lot</strong></p>
+                <a href="#signup" class="btn-primary" style="font-size: 0.9rem; padding: 10px 15px;">Get Link</a>
+            </div>
+            <div class="broker-card">
+                <h4>AvaTrade</h4>
+                <p>All Assets<br><strong>Commission: $5-$12/lot</strong></p>
+                <a href="#signup" class="btn-primary" style="font-size: 0.9rem; padding: 10px 15px;">Get Link</a>
+            </div>
+            <div class="broker-card">
+                <h4>ThinkMarkets</h4>
+                <p>Forex & Crypto<br><strong>Commission: $7/lot</strong></p>
+                <a href="#signup" class="btn-primary" style="font-size: 0.9rem; padding: 10px 15px;">Get Link</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- How It Works Section -->
+    <section id="howworks">
+        <h2 class="section-title">3 Steps to Get Started</h2>
+        <p class="section-subtitle">From zero to profitable in under 10 minutes.</p>
+        
+        <div class="step-container">
+            <div class="step-card">
+                <div class="step-number">01</div>
+                <h3>Sign Up Free</h3>
+                <p>Create an account in 2 minutes. Email + password. We'll never ask for payment. Ever.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">02</div>
+                <h3>Connect Your Broker</h3>
+                <p>Link your live or demo account from any supported broker. Your API keys stay encrypted and secure on your device.</p>
+            </div>
+            <div class="step-card">
+                <div class="step-number">03</div>
+                <h3>Start Trading & Earning</h3>
+                <p>Trade normally. Your affiliate links track every lot. Watch commissions roll in while our AI analyzes your performance.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sign Up Section -->
+    <section id="signup">
+        <h2 class="section-title">Get Started Free</h2>
+        <p class="section-subtitle">Join 10,000+ traders already using PadmakarFX to trade smarter and earn passive income.</p>
+        
+        <div class="portal-grid">
+            <div class="portal-form-wrapper">
+                <div class="success-message" id="successMessage">
+                    ✓ Account created! Check your email to verify and get started.
+                </div>
+                <div class="error-message" id="errorMessage">
+                    ✗ Something went wrong. Please try again.
+                </div>
+
+                <h3 style="margin-bottom: 15px; font-weight: 700;">Create Your Free Account</h3>
+                <p style="font-size:0.85rem; color:var(--text-muted); margin-bottom:25px;">No credit card required. No hidden fees. Free forever.</p>
+                
+                <form id="signupForm" onsubmit="handleSignup(event)">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" placeholder="John Trader" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" placeholder="you@example.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="••••••••" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="preferred-broker">Preferred Broker (Optional)</label>
+                        <select id="preferred-broker">
+                            <option value="">Select a broker...</option>
+                            <option value="ic-markets">IC Markets</option>
+                            <option value="pepperstone">Pepperstone</option>
+                            <option value="avatrade">AvaTrade</option>
+                            <option value="thinkmarkets">ThinkMarkets</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn-submit">Create Free Account →</button>
+                </form>
+            </div>
+
+            <div>
+                <div class="callout-box">
+                    <h4 style="font-weight:700; margin-bottom:12px; color: var(--mt5-green);">✓ Why PadmakarFX is Different</h4>
+                    <ul style="list-style: none; color: var(--text-muted); font-size: 0.9rem; line-height: 1.8;">
+                        <li>✓ Zero setup fees or recurring costs</li>
+                        <li>✓ Your data stays private (encrypted on your device)</li>
+                        <li>✓ Connect real or demo accounts</li>
+                        <li>✓ Automated affiliate commission tracking</li>
+                        <li>✓ AI analysis you'd normally pay $29/month for</li>
+                        <li>✓ Community of 10,000+ active traders</li>
+                    </ul>
+                </div>
+
+                <h3 style="margin-top: 40px; margin-bottom: 20px; font-weight: 700;">Frequently Asked Questions</h3>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <h4>Is this really free forever? <span>+</span></h4>
+                    <div class="answer">
+                        <p>Yes, 100% free forever. The basic AI analytics dashboard, trading journal, and broker integration will always be free. We earn money through affiliate commissions when you trade, and premium features we'll add later (optional). You never pay a dime unless you choose to upgrade to premium signals—and even then, it's optional.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <h4>How do you make money if it's free? <span>+</span></h4>
+                    <div class="answer">
+                        <p>Three ways: (1) Affiliate commissions from brokers when you trade through our referral links—$5 to $10 per lot, for life. (2) Optional premium subscriptions ($29/month) for advanced AI signals and backtesting. (3) B2B white-label deals where prop firms license our dashboard. You benefit, we profit. Win-win.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <h4>Do I need a broker account to use this? <span>+</span></h4>
+                    <div class="answer">
+                        <p>No. You can use PadmakarFX with a demo account to practice and learn. But to earn affiliate commissions and trade real money, you'll need a live account with one of our partner brokers. We recommend IC Markets, Pepperstone, or AvaTrade for best commissions and security.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <h4>Is my account data safe? <span>+</span></h4>
+                    <div class="answer">
+                        <p>Your API keys and trading history are encrypted locally on your device. We never store your money. We never see your account. You control everything. We just help you analyze and earn commissions through your trades.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item" onclick="toggleFaq(this)">
+                    <h4>What if I just want to learn? <span>+</span></h4>
+                    <div class="answer">
+                        <p>Perfect. Use a demo account. Practice with our trading signals and AI analysis. Build confidence. When you're ready to trade live, activate your broker link and start earning passive commissions on every trade. No pressure. No fees.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer Block -->
+    <footer>
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#monetization">Monetization</a></li>
+                    <li><a href="#howworks">How It Works</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>For Traders</h4>
+                <ul>
+                    <li><a href="#signup">Free Account</a></li>
+                    <li><a href="#features">AI Analytics</a></li>
+                    <li><a href="#">Trading Academy (Soon)</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>For Brokers & Prop Firms</h4>
+                <ul>
+                    <li><a href="#">White-Label Licensing</a></li>
+                    <li><a href="#">API Documentation</a></li>
+                    <li><a href="#">Enterprise Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Risk Disclaimer</a></li>
+                </ul>
+            </div>
+        </div>
+        
+        <div class="footer-bottom-flex">
+            <div class="footer-bottom">
+                <p><strong>PadmakarFX</strong> is a free trading analytics platform and affiliate hub. We do not manage funds, provide investment advice, or hold trader accounts. All trading carries risk.</p>
+                <p style="margin-top: 15px; opacity: 0.4;">&copy; 2024-2025 PadmakarFX. All Rights Reserved. | Built for traders. By traders.</p>
+            </div>
+            
+            <div style="text-align: right;">
+                <h4 style="color: var(--accent-cyan); margin-bottom: 15px;">📍 Global Platform</h4>
+                <p style="color: var(--text-muted); font-size: 0.85rem; line-height: 1.8;">
+                    <strong>Headquarters:</strong> Pune, India<br>
+                    <strong>Operated:</strong> Worldwide<br>
+                    <strong>Regulatory:</strong> Affiliate & Analytics (No Broker License)<br>
+                    <strong>Support:</strong> 24/5 Community Support
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS -->
+    <script>
+        // Mock Ticker Data
+        function updateTickerData() {
+            const tickers = {
+                'XAUUSD': { price: 2425.50, change: 0.75 },
+                'EURUSD': { price: 1.1470, change: -0.25 },
+                'GBPUSD': { price: 1.3520, change: 0.15 },
+                'BTCUSD': { price: 108450, change: 2.30 },
+                'NAS100': { price: 22680, change: -0.50 }
+            };
+
+            Object.keys(tickers).forEach(ticker => {
+                const data = tickers[ticker];
+                const isUp = data.change >= 0;
+                const arrow = isUp ? '▲' : '▼';
+                const sign = isUp ? '+' : '';
+                const displayText = `${arrow} ${data.price.toFixed(2)} (${sign}${data.change}%)`;
+                const className = isUp ? 'up' : 'down';
+
+                const elements = document.querySelectorAll(`#ticker${ticker}, #ticker${ticker}2`);
+                elements.forEach(el => {
+                    if (el) {
+                        el.innerHTML = displayText;
+                        el.className = className;
+                    }
+                });
+            });
+        }
+
+        // Form Submission
+        function handleSignup(event) {
+            event.preventDefault();
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const broker = document.getElementById('preferred-broker').value;
+
+            if (!name || !email || !password) {
+                showError('Please fill in all required fields.');
+                return;
+            }
+
+            // Simulate API call
+            setTimeout(() => {
+                console.log('Signup:', { name, email, broker });
+                showSuccess('Account created! Check your email to verify.');
+                document.getElementById('signupForm').reset();
+            }, 1000);
+        }
+
+        function showSuccess(message) {
+            const successMsg = document.getElementById('successMessage');
+            const errorMsg = document.getElementById('errorMessage');
+            successMsg.innerText = '✓ ' + message;
+            successMsg.style.display = 'block';
+            errorMsg.style.display = 'none';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        function showError(message) {
+            const errorMsg = document.getElementById('errorMessage');
+            const successMsg = document.getElementById('successMessage');
+            errorMsg.innerText = '✗ ' + message;
+            errorMsg.style.display = 'block';
+            successMsg.style.display = 'none';
+            setTimeout(() => {
+                errorMsg.style.display = 'none';
+            }, 5000);
+        }
+
+        // FAQ Toggle
+        function toggleFaq(element) {
+            element.classList.toggle('active');
+            const icon = element.querySelector('h4 span');
+            icon.innerText = element.classList.contains('active') ? '−' : '+';
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            updateTickerData();
+            setInterval(updateTickerData, 3000);
+        });
+    </script>
+
+</body>
+</html>
